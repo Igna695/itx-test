@@ -1,0 +1,6 @@
+spring:
+  kafka:
+    bootstrapServers: ${BOOTSTRAP_SERVER:localhost:29092}
+
+kafka:
+  output-topic: ${OUTPUT_TOPIC:topic1}

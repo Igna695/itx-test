@@ -1,0 +1,124 @@
+openapi: 3.0.1
+info:
+  version: 1.0.0
+  title: API servicios prueba Inditex
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    name: Jose Ignacio Bersabe Gutierrez
+    email: igna695@gmail.com
+  license:
+    name: ''
+servers:
+  - url: 'http://localhost:8080'
+tags:
+  - name: product
+    description: Servicios para gestionar productos
+paths:
+  /api/v1/getProducts:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - product
+      summary: Detalle de un producto
+      description: Devuelve el detalle de un producto de base de datos a partir de filtros de fecha, id y marca
+      operationId: getProducts
+      parameters:
+        - name: date
+          in: query
+          description: 'Fecha del producto'
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: '2023/09/25 15:00:00'
+        - name: productId
+          in: query
+          description: 'Id del producto'
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: brandId
+          in: query
+          description: 'Id de la marca'
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Detalles del producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseProduct'
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+        '403':
+          $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          $ref: '#/components/schemas/NotFound'
+        '409':
+          $ref: '#/components/schemas/Conflict'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    UnauthorizedError:
+      description: Información de autenticación no existe o es inválida
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+    ForbiddenError:
+      description: No se tiene acceso al recurso
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Petición mal formada
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: No encontrado
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: Conflicto
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+    ResponseProduct:
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int64
+          description: 'Id del producto'
+        brandId:
+          type: integer
+          format: int64
+          description: 'Id de la marca'
+        startDate:
+          type: string
+          format: date-time
+          description: 'Fecha inicio'
+          example: '2023/09/25 15:00:00'
+        endDate:
+          type: string
+          format: date-time
+          description: 'Fecha fin'
+          example: '2023/09/25 15:05:00'
+        price:
+          type: number
+          format: double
+          description: 'Precio'
+
+
