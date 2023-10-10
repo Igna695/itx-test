@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    #    active: standalone
+    include:
+      - kafka
+      - persistence
+
+
+logging:
+  level:
+    root: info
+#    org.hibernate: DEBUG
+
