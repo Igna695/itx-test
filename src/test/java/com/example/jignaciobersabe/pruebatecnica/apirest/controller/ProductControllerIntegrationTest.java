@@ -11,9 +11,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -36,6 +33,12 @@ class ProductControllerIntegrationTest {
     public static final long EXPECTED_BRAND_ID = 1L;
     public static final Double EXPECTED_PRICE = 38.95;
 
+    public static final Double EXPECTED_PRICE2 = 25.45;
+
+    public static final Double EXPECTED_PRICE3 = 35.5;
+
+    public static final Double EXPECTED_PRICE4 = 30.5;
+
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
@@ -43,16 +46,22 @@ class ProductControllerIntegrationTest {
 
     @Test
     void given_test_data_when_call_productoController_then_return_ok_and_correct_data() throws Exception {
-        List<String> dateList = Arrays.asList(
-                "2020-06-20T16:00:00Z", "2020-06-15T16:00:00Z", "2020-06-15T18:00:00Z", "2020-06-20T16:00:00Z");
+        callEndpoint("2020-06-20T16:00:00Z",EXPECTED_PRICE);
+    }
 
-        dateList.forEach(o -> {
-            try {
-                okResponse(o);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+    @Test
+    void given_test_data_when_call_productoController_then_return_ok_and_correct_data2() throws Exception {
+        callEndpoint("2020-06-14T16:00:00Z",EXPECTED_PRICE2);
+    }
+
+    @Test
+    void given_test_data_when_call_productoController_then_return_ok_and_correct_data3() throws Exception {
+        callEndpoint("2020-06-14T20:00:00Z",EXPECTED_PRICE3);
+    }
+
+    @Test
+    void given_test_data_when_call_productoController_then_return_ok_and_correct_data4() throws Exception {
+        callEndpoint("2020-06-15T10:00:00Z",EXPECTED_PRICE4);
     }
 
     @Test
@@ -64,7 +73,7 @@ class ProductControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    private void okResponse(String date) throws Exception {
+    private void callEndpoint(String date, Double price) throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(PATH)
                         .param("date", date)
                         .param("productId", PRODUCT_ID)
@@ -73,6 +82,6 @@ class ProductControllerIntegrationTest {
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.productId").value(EXPECTED_PRODUCT_ID))
                 .andExpect(jsonPath("$.brandId").value(EXPECTED_BRAND_ID))
-                .andExpect(jsonPath("$.price").value(EXPECTED_PRICE));
+                .andExpect(jsonPath("$.price").value(price));
     }
 }
